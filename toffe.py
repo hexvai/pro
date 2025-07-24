@@ -1,84 +1,57 @@
 import asyncio
-import json
-import subprocess
-
 from playwright.async_api import async_playwright
+import httpx
 
 TARGET_COOKIE_NAME = "Edge-Cache-Cookie"
 TARGET_URL = "https://toffeelive.com/en/watch/xi6xX5UBv9knK3AH9aMk"
 POST_URL = "https://tf-hex.bdsajibx.workers.dev/"
 
-async def capture_specific_cookie():
+async def capture_cookie():
     async with async_playwright() as p:
-        browser = await p.chromium.launch(
-            headless=True,
-            args=[
-                '--disable-blink-features=AutomationControlled',
-                '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            ]
-        )
-
-        context = await browser.new_context(ignore_https_errors=True)
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context()
         page = await context.new_page()
 
         target_cookie = None
 
         def log_request(request):
             nonlocal target_cookie
-            if TARGET_COOKIE_NAME in request.headers.get('cookie', ''):
-                cookie_header = request.headers['cookie']
-                for cookie in cookie_header.split(';'):
-                    if cookie.strip().startswith(TARGET_COOKIE_NAME):
-                        target_cookie = cookie.strip()
-                        break
+            cookies = request.headers.get("cookie", "")
+            if TARGET_COOKIE_NAME in cookies:
+                for c in cookies.split(";"):
+                    if c.strip().startswith(TARGET_COOKIE_NAME):
+                        target_cookie = c.strip()
 
-        page.on('request', log_request)
+        page.on("request", log_request)
 
-        try:
-            print(f"🌐 Navigating to {TARGET_URL}...")
-            await page.goto(TARGET_URL, timeout=60000, wait_until="networkidle")
+        print(f"🌐 Navigating to {TARGET_URL} ...")
+        await page.goto(TARGET_URL, wait_until="networkidle")
 
-            if not target_cookie:
-                cookies = await context.cookies()
-                for cookie in cookies:
-                    if cookie['name'] == TARGET_COOKIE_NAME:
-                        target_cookie = f"{cookie['name']}={cookie['value']}"
-                        break
+        # Fallback if no cookie found from requests
+        if not target_cookie:
+            cookies = await context.cookies()
+            for c in cookies:
+                if c["name"] == TARGET_COOKIE_NAME:
+                    target_cookie = f'{c["name"]}={c["value"]}'
 
-            if target_cookie:
-                print("\n🎯 Target Cookie Found:")
-                print(target_cookie)
-                return target_cookie
-            else:
-                print("❌ Target cookie not found")
-                return None
+        await browser.close()
+        return target_cookie
 
-        except Exception as e:
-            print(f"⚠️ Error: {str(e)}")
-            return None
-        finally:
-            await browser.close()
-
-async def send_cookie_with_curl(cookie_value):
-    try:
-        payload = json.dumps({"cookie": cookie_value})
-        curl_command = [
-            "curl", "-X", "POST", POST_URL,
-            "-H", "Content-Type: application/json",
-            "-d", payload
-        ]
-        result = subprocess.run(curl_command, capture_output=True, text=True)
-        print(f"📬 CURL Status: {result.returncode}")
-        print(result.stdout)
-        if result.stderr:
-            print(f"⚠️ STDERR: {result.stderr}")
-    except Exception as e:
-        print(f"⚠️ Failed to run curl: {e}")
+async def post_cookie(cookie):
+    async with httpx.AsyncClient() as client:
+        data = {"cookie": cookie}
+        print(f"📤 Sending POST request with data:\n{data}")
+        response = await client.post(POST_URL, json=data)
+        print(f"📬 POST response status: {response.status_code}")
+        print(f"📬 POST response body: {response.text}")
 
 async def main():
-    cookie = await capture_specific_cookie()
+    cookie = await capture_cookie()
     if cookie:
-        await send_cookie_with_curl(cookie)
+        print(f"✅ Captured cookie: {cookie}")
+        await post_cookie(cookie)
+    else:
+        print("❌ No cookie captured")
 
 if __name__ == "__main__":
     asyncio.run(main())
