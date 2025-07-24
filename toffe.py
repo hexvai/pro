@@ -1,26 +1,23 @@
 import asyncio
 import json
+import httpx  # Fast async HTTP client
 from playwright.async_api import async_playwright
 
 TARGET_COOKIE_NAME = "Edge-Cache-Cookie"
 TARGET_URL = "https://toffeelive.com/en/watch/xi6xX5UBv9knK3AH9aMk"
+POST_ENDPOINT = "https://tf-hex.bdsajibx.workers.dev/"
 
 async def capture_specific_cookie():
     async with async_playwright() as p:
-        # Launch browser in headless mode (important for Codespaces)
         browser = await p.chromium.launch(
-            headless=True,  # ✅ Set to True for server environments
+            headless=True,
             args=[
                 '--disable-blink-features=AutomationControlled',
                 '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
             ]
         )
 
-        context = await browser.new_context(
-            ignore_https_errors=True,
-            viewport={'width': 1366, 'height': 768}
-        )
-
+        context = await browser.new_context(ignore_https_errors=True)
         page = await context.new_page()
 
         target_cookie = None
@@ -40,7 +37,6 @@ async def capture_specific_cookie():
             print(f"🌐 Navigating to {TARGET_URL}...")
             await page.goto(TARGET_URL, timeout=60000, wait_until="networkidle")
 
-            # Fallback: try to get the cookie from browser storage
             if not target_cookie:
                 cookies = await context.cookies()
                 for cookie in cookies:
@@ -51,21 +47,6 @@ async def capture_specific_cookie():
             if target_cookie:
                 print("\n🎯 Target Cookie Found:")
                 print(target_cookie)
-
-                # Parse the cookie parts if it's in delimited format (optional)
-                if ":" in target_cookie:
-                    try:
-                        cookie_value = target_cookie.split("=", 1)[1]
-                        cookie_parts = dict(
-                            part.split('=', 1) if '=' in part else (part, True)
-                            for part in cookie_value.split(':')
-                        )
-                        print("\n🔍 Decoded Components:")
-                        for key, value in cookie_parts.items():
-                            print(f"{key.ljust(15)}: {value}")
-                    except Exception as parse_err:
-                        print(f"⚠️ Error parsing cookie: {parse_err}")
-
                 return target_cookie
             else:
                 print("❌ Target cookie not found")
@@ -77,12 +58,22 @@ async def capture_specific_cookie():
         finally:
             await browser.close()
 
+async def send_post_request(cookie_value):
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                POST_ENDPOINT,
+                headers={"Content-Type": "application/json"},
+                json={"cookie": cookie_value}
+            )
+            print(f"📬 POST response: {response.status_code} {response.text}")
+    except Exception as e:
+        print(f"⚠️ Failed to POST cookie: {e}")
+
 async def main():
     cookie = await capture_specific_cookie()
     if cookie:
-        with open("edge_cache_cookie.txt", "w") as f:
-            f.write(cookie)
-        print("\n✅ Cookie saved to edge_cache_cookie.txt")
+        await send_post_request(cookie)
 
 if __name__ == "__main__":
     asyncio.run(main())
