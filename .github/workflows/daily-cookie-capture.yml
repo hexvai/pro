@@ -1,19 +1,19 @@
-name: Daily Cookie Capture
+name: Daily Cookie POST
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # ⏰ Runs every day at 00:00 UTC
-  workflow_dispatch:      # ✅ Allow manual trigger too
+    - cron: '0 0 * * *'   # Runs every day at 00:00 UTC
+  workflow_dispatch:       # Manual run via GitHub UI
 
 jobs:
-  run-cookie-capture:
+  post-cookie:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout repository
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
+      - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
@@ -21,14 +21,8 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install playwright
+          pip install playwright httpx
           python -m playwright install --with-deps
 
-      - name: 🚀 Run cookie capture script
+      - name: 🚀 Run Cookie POST Script
         run: python3 toffe.py
-
-      - name: 📤 Upload cookie file as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: edge-cache-cookie
-          path: edge_cache_cookie.txt
