@@ -1,0 +1,23 @@
+name: HLS to RTMP Stream
+
+on:
+  workflow_dispatch:  # Run manually only for now
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: 🛠 Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: 🚀 Run FFmpeg HLS to RTMP Python script
+        run: python3 stream_hls_to_rtmp.py
