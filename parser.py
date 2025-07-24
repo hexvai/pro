@@ -24,7 +24,7 @@ for day_key, categories in data.items():
                 "channels": [
                     {
                         "name": ch["channel_name"],
-                        "link": f"http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium{ch['channel_id']}/mono.m3u8&data=...",
+                        "link": f"http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium{ch['channel_id']}/mono.m3u8&data=T3JpZ2luPWh0dHBzOi8vZm9yY2VkdG9wbGF5Lnh5enxSZWZlcmVyPWh0dHBzOi8vZm9yY2VkdG9wbGF5Lnh5ei98VXNlci1hZ2VudD1Nb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0OyBydjoxMzkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC8xMzkuMHxPcmlnaW49aHR0cHM6Ly9mb3JjZWR0b3BsYXkueHl6fFJlZmVyZXI9aHR0cHM6Ly9mb3JjZWR0b3BsYXkueHl6L3xVc2VyLWFnZW50PU1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjEzOS4wKSBHZWNrby8yMDEwMDEwMSBGaXJlZm94LzEzOS4w",
                         "api": "",
                         "scheme": "0"
                     }
@@ -33,7 +33,7 @@ for day_key, categories in data.items():
                 "channels2": [
                     {
                         "name": ch2["channel_name"],
-                        "link": f"http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium{ch2['channel_id']}/mono.m3u8&data=...",
+                        "link": f"http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium{ch2['channel_id']}/mono.m3u8&data=T3JpZ2luPWh0dHBzOi8vZm9yY2VkdG9wbGF5Lnh5enxSZWZlcmVyPWh0dHBzOi8vZm9yY2VkdG9wbGF5Lnh5ei98VXNlci1hZ2VudD1Nb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0OyBydjoxMzkuMCkgR2Vja28vMjAxMDAxMDEgRmlyZWZveC8xMzkuMHxPcmlnaW49aHR0cHM6Ly9mb3JjZWR0b3BsYXkueHl6fFJlZmVyZXI9aHR0cHM6Ly9mb3JjZWR0b3BsYXkueHl6L3xVc2VyLWFnZW50PU1vemlsbGEvNS4wIChXaW5kb3dzIE5UIDEwLjA7IFdpbjY0OyB4NjQ7IHJ2OjEzOS4wKSBHZWNrby8yMDEwMDEwMSBGaXJlZm94LzEzOS4w",
                         "api": "",
                         "scheme": "0"
                     }
