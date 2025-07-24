@@ -1,6 +1,6 @@
 import subprocess
 
-HLS_URL = "https://rgelive.akamaized.net/hls/live/2043151/radiolive/playlist.m3u8"  # replace with your real .m3u8
+HLS_URL = "https://live.incableinternet.com/v/QCZ86p6-0oo.m3u8"  # replace with your real .m3u8
 RTMP_URL = "rtmp://live.restream.io/live/re_7638211_event4c220a8725e842108313d235ea41e326"  # replace with your actual RTMP
 
 def stream_to_rtmp():
