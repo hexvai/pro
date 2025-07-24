@@ -1,11 +1,12 @@
 import asyncio
 import json
-import httpx  # Fast async HTTP client
+import subprocess
+
 from playwright.async_api import async_playwright
 
 TARGET_COOKIE_NAME = "Edge-Cache-Cookie"
 TARGET_URL = "https://toffeelive.com/en/watch/xi6xX5UBv9knK3AH9aMk"
-POST_ENDPOINT = "https://tf-hex.bdsajibx.workers.dev/"
+POST_URL = "https://tf-hex.bdsajibx.workers.dev/"
 
 async def capture_specific_cookie():
     async with async_playwright() as p:
@@ -58,22 +59,26 @@ async def capture_specific_cookie():
         finally:
             await browser.close()
 
-async def send_post_request(cookie_value):
+async def send_cookie_with_curl(cookie_value):
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                POST_ENDPOINT,
-                headers={"Content-Type": "application/json"},
-                json={"cookie": cookie_value}
-            )
-            print(f"📬 POST response: {response.status_code} {response.text}")
+        payload = json.dumps({"cookie": cookie_value})
+        curl_command = [
+            "curl", "-X", "POST", POST_URL,
+            "-H", "Content-Type: application/json",
+            "-d", payload
+        ]
+        result = subprocess.run(curl_command, capture_output=True, text=True)
+        print(f"📬 CURL Status: {result.returncode}")
+        print(result.stdout)
+        if result.stderr:
+            print(f"⚠️ STDERR: {result.stderr}")
     except Exception as e:
-        print(f"⚠️ Failed to POST cookie: {e}")
+        print(f"⚠️ Failed to run curl: {e}")
 
 async def main():
     cookie = await capture_specific_cookie()
     if cookie:
-        await send_post_request(cookie)
+        await send_cookie_with_curl(cookie)
 
 if __name__ == "__main__":
     asyncio.run(main())
