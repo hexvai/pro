@@ -4,15 +4,18 @@ HLS_URL = "https://rgelive.akamaized.net/hls/live/2043151/radiolive/playlist.m3u
 RTMP_URL = "rtmp://live.restream.io/live/re_7638211_event4c220a8725e842108313d235ea41e326"  # replace with your actual RTMP
 
 def stream_to_rtmp():
-    command = [
-        "ffmpeg",
-        "-re",                     # Read input in real-time
-        "-i", HLS_URL,            # HLS input URL
-        "-c:v", "copy",           # Copy video codec
-        "-c:a", "aac",            # Encode audio to AAC (required by many RTMP servers)
-        "-f", "flv",              # Output format for RTMP
-        RTMP_URL
-    ]
+   command = [
+    "ffmpeg",
+    "-re",
+    "-i", HLS_URL,
+    "-c:v", "libx264",
+    "-preset", "veryfast",
+    "-b:v", "2000k",
+    "-c:a", "aac",
+    "-b:a", "128k",
+    "-f", "flv",
+    RTMP_URL
+]
 
     print("▶️ Starting FFmpeg stream...")
     result = subprocess.run(command, capture_output=True, text=True)
