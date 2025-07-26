@@ -1,6 +1,5 @@
 import asyncio
 from playwright.async_api import async_playwright
-import httpx
 
 TARGET_COOKIE_NAME = "Edge-Cache-Cookie"
 TARGET_URL = "https://toffeelive.com/en/watch/xi6xX5UBv9knK3AH9aMk"
