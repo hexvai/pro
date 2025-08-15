@@ -21,5 +21,5 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-- name: Run M3U Fetch & Post Script
-  run: python zee.py
+      - name: Run M3U Fetch & Post Script
+        run: python zee.py
