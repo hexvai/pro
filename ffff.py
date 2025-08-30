@@ -1,6 +1,6 @@
 import subprocess
 
-HLS_URL = "https://futbollive.online/T-Sports/index.m3u8?token=dfa2a85f5675477f79842dd6b0debca7d027eea7-689b0299fd6576a10675f61de6e181e2-1756557594-1756553994"
+HLS_URL = "https://tvsen6.aynaott.com/tsportsfhd/tracks-v1a1/mono.ts.m3u8"
 
 RTMP_URLS = [
     "rtmp://live.restream.io/live/re_9963825_eventb6539cc6563d42c1a983c4c9118051ae",
