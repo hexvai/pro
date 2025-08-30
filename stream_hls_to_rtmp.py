@@ -1,7 +1,7 @@
 import subprocess
 
-HLS_URL = "https://live.incableinternet.com/v/QCZ86p6-0oo.m3u8"  # replace with your real .m3u8
-RTMP_URL = "rtmp://live.restream.io/live/re_7638211_event4c220a8725e842108313d235ea41e326"  # replace with your actual RTMP
+HLS_URL = "https://tvsen6.aynaott.com/tsportsfhd/tracks-v1a1/mono.ts.m3u8"  # replace with your real .m3u8
+RTMP_URL = "rtmp://live.restream.io/live/re_9963825_eventb6539cc6563d42c1a983c4c9118051ae"  # replace with your actual RTMP
 
 def stream_to_rtmp():
    command = [
