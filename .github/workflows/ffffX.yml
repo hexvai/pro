@@ -1,4 +1,4 @@
-name: FFFFFFF
+name: XXXX
 
 on:
   workflow_dispatch:  # Run manually only for now
